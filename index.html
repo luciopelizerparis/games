@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, 
+                initial-scale=1.0">
+    <title>FLAPPY BIRD DO CREUZEBÉQUI</title>
+    <canvas id="cnv" width="288" height="512" 
+            style="border: 4px solid green">
+         </canvas>
+</head>
+<body onload="start()">
+    <script>
+        var canvas = document.getElementById("cnv");
+        var ctx = canvas.getContext("2d");
+        var passaro = new Image();
+        var troncoA = new Image();
+        var troncoB = new Image();
+        var fundo = new Image();
+        var pontos = 0;
+        var posicPassaro = {
+            x: 25,
+            y: canvas.height / 2
+        };
+        var posicTroncoA = {
+            x: canvas.width + 100,
+            y: -50 
+        };
+        var posicTroncoB = {
+            x: canvas.width + 100,
+            y: 290 
+        };
+        var posicFundo = {
+            x: 0,
+            y: 0
+        };
+        var vao = {
+            x: posicTroncoA.x,
+            y: posicTroncoB.y - 80,
+            larg: 110,
+            alt: 80
+        };
+        function desenhar()
+        { // inicio da função desenhar
+            ctx.clearRect(0, 0, 288, 512);
+            ctx.beginPath();
+            posicPassaro.y += 10;
+            ctx.drawImage(fundo, posicFundo.x, posicFundo.y,
+                 canvas.width, canvas.height);
+            ctx.drawImage(passaro, 
+                          posicPassaro.x,
+                          posicPassaro.y, 50, 50);
+            ctx.drawImage(troncoA, posicTroncoA.x, posicTroncoA.y, 110, 280);
+            ctx.drawImage(troncoB, posicTroncoB.x, posicTroncoB.y, 110, 280);
+            ctx.closePath();
+            troncos();
+            placar();
+            colisao();
+        } // fim da função desenhar
+
+        function start()
+        { // inicio da função start
+            canvas.addEventListener("mousedown", impulso);
+            passaro.src = "img/passaro.png";
+            troncoA.src = "img/troncoA.png";
+            troncoB.src = "img/troncoB.png";
+            fundo.src = "img/fundo.png";
+            setInterval(desenhar, 200);
+        } // fim da função start
+
+        function impulso()
+        {
+            posicPassaro.y -= 25;
+        }
+
+        function troncos()
+        {
+            posicTroncoA.x -= 7;
+            posicTroncoB.x -= 7;
+            vao.x = posicTroncoA.x;
+            vao.y = posicTroncoB.y - 80;
+            if(posicTroncoA.x < -50)
+            {
+                posicTroncoA.x = canvas.width + 100;
+                posicTroncoB.x = canvas.width + 100;
+                posicTroncoA.y = Math.floor(Math.random() * (-10 + -200)) + -10;
+                posicTroncoB.y = posicTroncoA.y + 350;
+            }
+        }
+        function placar()
+        {
+            ctx.font = "20px Arial";
+            ctx.fillStyle = "yellow";
+            ctx.fillText("Pontos: " + pontos, 10, 50);
+        }
+
+        function colisao()
+        {
+            if (posicTroncoA.x >= posicPassaro.x && posicTroncoA.x <= posicPassaro.x + 50 &&
+                (posicPassaro.y <= posicTroncoA.y + 280 || posicPassaro.y + 50 >= posicTroncoB.y))
+            {
+                alert("Game Over! Pontuação: " + pontos);
+                pontos = 0;
+                posicPassaro.y = canvas.height / 2; 
+                posicTroncoA.x = canvas.width + 100; 
+                posicTroncoB.x = canvas.width + 100;
+            }
+            else if (posicTroncoA.x + 110 < posicPassaro.x)
+            {
+                pontos++;
+            }
+        }
+    </script>
+</body>
+</html>
